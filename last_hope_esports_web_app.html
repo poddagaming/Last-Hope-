@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Last Hope Esports Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              red: '#ff2a5f',
+              purple: '#9d4edd',
+              cyan: '#00f5d4',
+              dark: '#0d0f17',
+              card: '#161926',
+              border: '#262b40'
+            }
+          },
+          animation: {
+            'pulse-glow': 'pulseGlow 2s infinite alternate',
+            'float': 'float 3s ease-in-out infinite'
+          },
+          keyframes: {
+            pulseGlow: {
+              '0%': { boxShadow: '0 0 10px rgba(255,42,95,0.4), 0 0 20px rgba(157,78,221,0.2)' },
+              '100%': { boxShadow: '0 0 25px rgba(255,42,95,0.8), 0 0 40px rgba(0,245,212,0.4)' }
+            },
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-8px)' }
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Phosphor / FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap');
+    
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background-color: #090a10;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .font-orbitron {
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0d0f17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #262b40;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff2a5f;
+    }
+
+    .neon-border-red {
+      box-shadow: 0 0 12px rgba(255, 42, 95, 0.4);
+      border: 1px solid rgba(255, 42, 95, 0.6);
+    }
+    .neon-border-cyan {
+      box-shadow: 0 0 12px rgba(0, 245, 212, 0.4);
+      border: 1px solid rgba(0, 245, 212, 0.6);
+    }
+    .glass-panel {
+      background: rgba(22, 25, 38, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: linear-gradient(135deg, rgba(25, 29, 45, 0.9) 0%, rgba(15, 17, 26, 0.95) 100%);
+      border: 1px solid #262b40;
+    }
+    .clip-corner {
+      clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px));
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#090a10] text-gray-200">
+
+  <!-- 1. INTRO / SPLASH SCREEN -->
+  <div id="splash-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#07080d] transition-opacity duration-700">
+    <div class="relative flex flex-col items-center">
+      <!-- Glow aura behind logo -->
+      <div class="absolute -inset-4 rounded-full bg-gradient-to-r from-brand-red via-brand-purple to-brand-cyan opacity-40 blur-xl animate-pulse"></div>
+      
+      <!-- Animated Emblem/Logo -->
+      <div class="relative z-10 flex flex-col items-center animate-float">
+        <div class="w-28 h-28 mb-4 rounded-2xl bg-gradient-to-tr from-brand-red to-brand-purple p-1 shadow-2xl flex items-center justify-center">
+          <div class="w-full h-full bg-[#0d0f17] rounded-xl flex items-center justify-center border border-brand-cyan/30">
+            <i class="fa-solid font-bold fa-shield-halved text-5xl text-transparent bg-clip-text bg-gradient-to-r from-brand-red to-brand-cyan"></i>
+          </div>
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-black tracking-wider text-white font-orbitron text-center">
+          LAST <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-red via-brand-purple to-brand-cyan">HOPE</span>
+        </h1>
+        <p class="text-brand-cyan tracking-widest uppercase text-sm mt-2 font-semibold">Esports Tournament Management</p>
+      </div>
+
+      <!-- Loading Bar -->
+      <div class="w-64 h-1.5 bg-gray-800 rounded-full mt-8 overflow-hidden relative">
+        <div id="splash-bar" class="h-full bg-gradient-to-r from-brand-red via-brand-purple to-brand-cyan w-0 transition-all duration-300"></div>
+      </div>
+      <span class="text-xs text-gray-400 mt-2 font-mono">INITIALIZING SYSTEM MODULES...</span>
+
+      <button id="enter-btn" onclick="dismissSplash()" class="hidden mt-6 px-8 py-3 rounded-lg bg-gradient-to-r from-brand-red to-brand-purple text-white font-bold font-orbitron tracking-wider hover:scale-105 transition-all duration-200 shadow-lg shadow-brand-red/30">
+        ENTER PLATFORM
+      </button>
+    </div>
+  </div>
+
+  <!-- HEADER & NAVIGATION -->
+  <header class="sticky top-0 z-40 glass-panel border-b border-brand-border">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-brand-red to-brand-cyan p-0.5">
+            <div class="w-full h-full bg-[#0d0f17] rounded-[7px] flex items-center justify-center">
+              <i class="fa-solid fa-crosshairs text-brand-red text-xl"></i>
+            </div>
+          </div>
+          <div>
+            <span class="text-xl font-black font-orbitron text-white tracking-wider">LAST <span class="text-brand-red">HOPE</span></span>
+            <span class="block text-[10px] text-brand-cyan tracking-widest font-semibold uppercase -mt-1">Esports League</span>
+          </div>
+        </div>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center space-x-1">
+          <button onclick="navigateTo('home')" class="nav-btn px-3 py-2 rounded-md text-sm font-semibold transition-all hover:text-brand-cyan text-brand-cyan" data-target="home">Home</button>
+          <button onclick="navigateTo('rules')" class="nav-btn px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-cyan transition-all" data-target="rules">Rules</button>
+          <button onclick="navigateTo('events')" class="nav-btn px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-cyan transition-all" data-target="events">Events</button>
+          <button onclick="navigateTo('players')" class="nav-btn px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-cyan transition-all" data-target="players">Players</button>
+          <button onclick="navigateTo('news')" class="nav-btn px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-cyan transition-all" data-target="news">News</button>
+          <button onclick="navigateTo('results')" class="nav-btn px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-cyan transition-all" data-target="results">Results</button>
+          <button onclick="navigateTo('history')" class="nav-btn px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-cyan transition-all" data-target="history">Event History</button>
+          <button onclick="navigateTo('winners')" class="nav-btn px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-cyan transition-all" data-target="winners">Winners</button>
+          <button onclick="navigateTo('bans')" class="nav-btn px-3 py-2 rounded-md text-sm font-semibold text-gray-300 hover:text-brand-red transition-all" data-target="bans">
+            <span class="text-brand-red"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Bans</span>
+          </button>
+        </nav>
+
+        <!-- Right Side User / Auth Actions -->
+        <div class="hidden sm:flex items-center gap-3">
+          <div id="logged-out-view" class="flex items-center gap-2">
+            <button onclick="openAuthModal('signin')" class="px-4 py-2 rounded-lg text-sm font-bold border border-brand-border text-gray-300 hover:bg-brand-border transition-all">Sign In</button>
+            <button onclick="openAuthModal('login')" class="px-4 py-2 rounded-lg text-sm font-bold bg-gradient-to-r from-brand-red to-brand-purple text-white hover:opacity-90 transition-all shadow-md shadow-brand-red/20 font-orbitron">Log In</button>
+          </div>
+          
+          <div id="logged-in-view" class="hidden flex items-center gap-3">
+            <div class="flex items-center gap-2 bg-[#121522] border border-brand-cyan/40 px-3 py-1.5 rounded-lg">
+              <div class="w-7 h-7 rounded-full bg-brand-cyan/20 border border-brand-cyan text-brand-cyan flex items-center justify-center font-bold text-xs" id="user-avatar-badge">P1</div>
+              <div class="text-left">
+                <span id="user-display-name" class="block text-xs font-bold text-white leading-tight">ProGamer_X</span>
+                <span id="user-status-role" class="block text-[10px] text-green-400 font-mono">APPROVED PLAYER</span>
+              </div>
+            </div>
+            <button onclick="toggleUserStatus()" title="Switch Player Approval Demo State" class="px-2.5 py-1.5 rounded-lg text-xs bg-brand-border text-gray-300 hover:text-white" id="toggle-status-btn">
+              <i class="fa-solid fa-user-gear"></i>
+            </button>
+            <button onclick="logout()" class="p-2 text-gray-400 hover:text-brand-red"><i class="fa-solid fa-right-from-bracket"></i></button>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Toggle Button -->
+        <div class="lg:hidden flex items-center gap-2">
+          <button onclick="toggleMobileMenu()" class="p-2 rounded-lg text-gray-300 hover:text-white hover:bg-brand-border">
+            <i class="fa-solid fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-brand-border bg-[#0d0f17]/95 px-4 pt-3 pb-6 space-y-2">
+      <button onclick="navigateTo('home')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-white hover:bg-brand-border">Home</button>
+      <button onclick="navigateTo('rules')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-brand-border">Rules</button>
+      <button onclick="navigateTo('events')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-brand-border">Events</button>
+      <button onclick="navigateTo('players')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-brand-border">Players</button>
+      <button onclick="navigateTo('news')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-brand-border">News</button>
+      <button onclick="navigateTo('results')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-brand-border">Results</button>
+      <button onclick="navigateTo('history')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-brand-border">Event History</button>
+      <button onclick="navigateTo('winners')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-brand-border">Winners</button>
+      <button onclick="navigateTo('bans')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-brand-red hover:bg-brand-border">Bans & Punishments</button>
+      
+      <div class="pt-4 border-t border-brand-border/60 flex flex-col gap-2">
+        <button onclick="openAuthModal('login')" class="w-full py-2.5 rounded-lg font-bold bg-brand-red text-white text-center">Log In / Sign Up</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Live Ticker Marquee Announcement -->
+  <div class="bg-brand-card/90 border-b border-brand-border py-2 px-4 overflow-hidden text-xs flex items-center">
+    <span class="bg-brand-red text-white font-bold px-2 py-0.5 rounded font-orbitron mr-3 flex-shrink-0 animate-pulse">LIVE NEWS</span>
+    <div class="whitespace-nowrap overflow-x-auto scrollbar-none flex items-center space-x-8 text-gray-300 font-mono">
+      <span>🔥 <b>Grand Championship 2026</b> Registrations Open! $10,000 Prize Pool.</span>
+      <span>🚨 <b>Player Notice:</b> Check banned lists for updated tournament restrictions.</span>
+      <span>🏆 <b>Apex Vanguard</b> won Championship Series Week #4!</span>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT CONTAINER WITH ROUTED SECTIONS -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- 2. HOME SECTION -->
+    <section id="sec-home" class="view-section space-y-10">
+      <!-- Hero Banner Wireframe Implementation -->
+      <div class="relative rounded-2xl overflow-hidden border border-brand-border bg-gradient-to-r from-[#141021] via-[#1a142e] to-[#0c1424] p-6 sm:p-10 shadow-2xl">
+        <!-- Glow Overlay -->
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brand-cyan/10 rounded-full blur-3xl -z-0"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-brand-red/10 rounded-full blur-3xl -z-0"></div>
+
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-7 space-y-5">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-cyan/10 border border-brand-cyan/30 text-brand-cyan text-xs font-bold uppercase tracking-wider">
+              <i class="fa-solid fa-fire text-brand-red"></i> Featured Tournament
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight font-orbitron">
+              CYBER SHOWDOWN <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-red via-brand-purple to-brand-cyan">SEASON 5 GRAND FINALS</span>
+            </h1>
+            <p class="text-gray-400 text-sm sm:text-base max-w-xl">
+              Compete against the top tactical squads in the region. Verified players gain instant access to room credentials, live match statistics, and official leaderboard brackets.
+            </p>
+
+            <div class="flex flex-wrap gap-4 pt-2">
+              <button onclick="handleApplyClick('Cyber Showdown Season 5')" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-brand-red to-brand-purple font-black text-white font-orbitron tracking-wider text-base shadow-lg shadow-brand-red/30 hover:scale-105 transition-transform flex items-center gap-2">
+                <i class="fa-solid fa-gamepad"></i> APPLY NOW
+              </button>
+              <button onclick="navigateTo('rules')" class="px-6 py-3.5 rounded-xl border border-brand-border bg-brand-card hover:border-brand-cyan text-gray-300 font-bold transition-all">
+                Tournament Rules
+              </button>
+            </div>
+          </div>
+
+          <!-- Interactive Event Banner Card -->
+          <div class="lg:col-span-5">
+            <div class="glass-card rounded-2xl p-4 border border-brand-border hover:border-brand-purple/60 transition-all clip-corner group">
+              <div class="relative h-56 rounded-xl overflow-hidden bg-gray-900 mb-4">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80" alt="Event Banner" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0d0f17] via-transparent to-transparent"></div>
+                <span class="absolute top-3 right-3 bg-brand-red text-white text-xs font-bold px-2.5 py-1 rounded font-mono">PRIZE: $5,000</span>
+              </div>
+              <div class="flex justify-between items-center text-xs font-mono text-gray-400 mb-2">
+                <span><i class="fa-regular fa-calendar text-brand-cyan mr-1"></i> Oct 15, 2026 - 20:00 EST</span>
+                <span class="text-brand-cyan">5v5 Tactical Shooter</span>
+              </div>
+              <h3 class="text-xl font-bold text-white font-orbitron mb-2">LAST HOPE REGIONAL OPEN</h3>
+              <div class="flex items-center justify-between pt-3 border-t border-brand-border/60">
+                <span class="text-xs text-gray-400"><i class="fa-solid fa-users text-brand-purple mr-1"></i> 28 / 32 Teams Registered</span>
+                <button onclick="handleApplyClick('Last Hope Regional Open')" class="px-4 py-1.5 rounded bg-brand-cyan/20 border border-brand-cyan text-brand-cyan font-bold text-xs hover:bg-brand-cyan hover:text-black transition-all">APPLY</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Platform Stats Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="glass-card p-4 rounded-xl border border-brand-border flex items-center gap-4">
+          <div class="w-12 h-12 rounded-lg bg-brand-red/10 border border-brand-red/30 flex items-center justify-center text-brand-red text-2xl">
+            <i class="fa-solid fa-trophy"></i>
+          </div>
+          <div>
+            <span class="block text-2xl font-black font-orbitron text-white">$45,000+</span>
+            <span class="text-xs text-gray-400">Total Awarded</span>
+          </div>
+        </div>
+        <div class="glass-card p-4 rounded-xl border border-brand-border flex items-center gap-4">
+          <div class="w-12 h-12 rounded-lg bg-brand-cyan/10 border border-brand-cyan/30 flex items-center justify-center text-brand-cyan text-2xl">
+            <i class="fa-solid fa-user-ninja"></i>
+          </div>
+          <div>
+            <span class="block text-2xl font-black font-orbitron text-white">1,420</span>
+            <span class="text-xs text-gray-400">Verified Players</span>
+          </div>
+        </div>
+        <div class="glass-card p-4 rounded-xl border border-brand-border flex items-center gap-4">
+          <div class="w-12 h-12 rounded-lg bg-brand-purple/10 border border-brand-purple/30 flex items-center justify-center text-brand-purple text-2xl">
+            <i class="fa-solid fa-bolt"></i>
+          </div>
+          <div>
+            <span class="block text-2xl font-black font-orbitron text-white">128</span>
+            <span class="text-xs text-gray-400">Tournaments Held</span>
+          </div>
+        </div>
+        <div class="glass-card p-4 rounded-xl border border-brand-border flex items-center gap-4">
+          <div class="w-12 h-12 rounded-lg bg-green-500/10 border border-green-500/30 flex items-center justify-center text-green-400 text-2xl">
+            <i class="fa-solid fa-shield-check"></i>
+          </div>
+          <div>
+            <span class="block text-2xl font-black font-orbitron text-white">100%</span>
+            <span class="text-xs text-gray-400">Fair Play Shield</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. RULES SECTION -->
+    <section id="sec-rules" class="view-section hidden space-y-6">
+      <div class="border-l-4 border-brand-cyan pl-4">
+        <h2 class="text-2xl font-black text-white font-orbitron">TOURNAMENT RULES & GENERAL CODE OF CONDUCT</h2>
+        <p class="text-xs text-gray-400">All players must strictly comply with these rules. Violations will result in warnings or immediate permanent ban.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass-card rounded-2xl p-6 space-y-4 border border-brand-border">
+          <h3 class="text-lg font-bold text-brand-cyan flex items-center gap-2">
+            <i class="fa-solid fa-gavel"></i> General Match Rules
+          </h3>
+          <ul class="space-y-3 text-sm text-gray-300">
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-chevron-right text-brand-red text-xs mt-1"></i>
+              <span><b>Identity Verification:</b> Players must use their registered in-game ID and Discord tag provided in their profile settings.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-chevron-right text-brand-red text-xs mt-1"></i>
+              <span><b>Room Credentials Security:</b> Custom Room Passwords are strict confidential data. Sharing credentials to unverified players results in an immediate ban.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-chevron-right text-brand-red text-xs mt-1"></i>
+              <span><b>Punctuality:</b> Teams must join the match lobby 15 minutes prior to the designated match start time.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-chevron-right text-brand-red text-xs mt-1"></i>
+              <span><b>Proof Submission:</b> Team captains must take screenshots/recordings of victory screens for result verification.</span>
+            </li>
+          </ul>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 space-y-4 border border-brand-border">
+          <h3 class="text-lg font-bold text-brand-red flex items-center gap-2">
+            <i class="fa-solid fa-shield-xmark"></i> Cheating & Punishments Policy
+          </h3>
+          <ul class="space-y-3 text-sm text-gray-300">
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-chevron-right text-brand-red text-xs mt-1"></i>
+              <span><b>Zero Tolerance Cheating:</b> Use of third-party software, scripts, exploit bugs, or hacks results in immediate permanent hardware ban.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-chevron-right text-brand-red text-xs mt-1"></i>
+              <span><b>Toxic Behavior:</b> Toxicity towards opponents or tournament admins will yield strikes / warnings. 3 strikes lead to a season ban.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <i class="fa-solid fa-chevron-right text-brand-red text-xs mt-1"></i>
+              <span><b>Public Warning Log:</b> Infractions, warnings, and bans are publicly logged in the Public Bans tab.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. EVENTS PAGE / TAB WITH WORKFLOW -->
+    <section id="sec-events" class="view-section hidden space-y-8">
+      <div class="flex justify-between items-center border-b border-brand-border pb-4">
+        <div>
+          <h2 class="text-2xl font-black text-white font-orbitron">EVENTS & TOURNAMENT LOBBIES</h2>
+          <p class="text-xs text-gray-400">Apply for active events and manage approved tournament pass credentials</p>
+        </div>
+        <!-- Status indicator for user experience -->
+        <div class="text-right">
+          <span class="text-xs text-gray-400 block">Your Current Status:</span>
+          <span id="events-user-status-pill" class="inline-block px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400 border border-green-500/40 font-mono">APPROVED PLAYER</span>
+        </div>
+      </div>
+
+      <!-- Main Active Event Wireframe Card -->
+      <div class="glass-card rounded-2xl border border-brand-border p-6 relative overflow-hidden">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+          <div class="relative h-48 rounded-xl overflow-hidden bg-gray-800">
+            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80" alt="Event Banner" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0d0f17] via-transparent to-transparent"></div>
+            <span class="absolute top-2 left-2 bg-brand-cyan text-black font-bold text-xs px-2 py-0.5 rounded">FEATURED</span>
+          </div>
+
+          <div class="md:col-span-2 space-y-3">
+            <h3 class="text-2xl font-bold text-white font-orbitron">LAST HOPE WINTER CHAMPIONSHIP 2026</h3>
+            <p class="text-sm text-gray-400">Squad Deathmatch & Battle Royale Clash. Standard competitive ruleset applies.</p>
+
+            <div class="flex flex-wrap gap-4 text-xs font-mono text-gray-300">
+              <div class="bg-brand-card border border-brand-border px-3 py-1.5 rounded"><i class="fa-regular fa-clock text-brand-cyan mr-1"></i> Oct 28, 2026 - 19:00 EST</div>
+              <div class="bg-brand-card border border-brand-border px-3 py-1.5 rounded"><i class="fa-solid fa-trophy text-amber-400 mr-1"></i> $10,000 Cash Pool</div>
+              <div class="bg-brand-card border border-brand-border px-3 py-1.5 rounded"><i class="fa-solid fa-shield text-brand-red mr-1"></i> Approved Access Only</div>
+            </div>
+
+            <div class="pt-2 flex items-center gap-3">
+              <button onclick="handleApplyClick('Last Hope Winter Championship 2026')" class="px-6 py-2.5 rounded-lg bg-gradient-to-r from-brand-red to-brand-purple font-bold text-white font-orbitron text-sm shadow-md shadow-brand-red/30 hover:scale-105 transition-all">
+                APPLY FOR EVENT
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WORKFLOW TAB DISPLAY BASED ON WIREFRAME NOTES -->
+      <!-- "after apply and approved Players open a new tab. Is it Reject give Rejecting" -->
+      <div class="mt-8">
+        <h3 class="text-lg font-bold text-white font-orbitron mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-folder-open text-brand-cyan"></i> MY EVENT ACCESS TAB
+        </h3>
+
+        <!-- VIEW: APPROVED PLAYER ACCESS CONTAINER -->
+        <div id="tab-approved-view" class="glass-card rounded-2xl border-2 border-brand-cyan/50 p-6 relative bg-gradient-to-b from-[#121b28] to-brand-card">
+          <div class="flex items-center justify-between border-b border-brand-border pb-4 mb-6">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center font-bold text-lg"><i class="fa-solid fa-circle-check"></i></div>
+              <div>
+                <span class="text-xs text-green-400 font-mono font-bold uppercase tracking-widest block">Status: Application Approved</span>
+                <h4 class="text-xl font-bold text-white font-orbitron">LAST HOPE WINTER CHAMPIONSHIP - PLAYER PASS</h4>
+              </div>
+            </div>
+            <button onclick="navigateTo('results')" class="px-4 py-2 rounded-lg bg-brand-cyan text-black font-bold text-xs font-orbitron hover:bg-white transition-all flex items-center gap-1">
+              <i class="fa-solid fa-chart-line"></i> VIEW LIVE RESULTS
+            </button>
+          </div>
+
+          <!-- Grid details required by sketch notes: Event Date, Time, Room Password, Rules, Event Detail, Event Banner, Resats/Results -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div class="bg-[#0f121d] p-4 rounded-xl border border-brand-border space-y-1">
+              <span class="text-xs text-gray-400 block uppercase font-mono">Event Date & Time</span>
+              <p class="text-base font-bold text-white font-mono">Oct 28, 2026 @ 19:00 EST</p>
+            </div>
+
+            <div class="bg-[#0f121d] p-4 rounded-xl border border-brand-cyan/40 space-y-1 relative">
+              <span class="text-xs text-brand-cyan block uppercase font-mono font-bold">Room Credentials (CONFIDENTIAL)</span>
+              <div class="flex items-center justify-between">
+                <span class="text-lg font-black font-mono text-amber-400 tracking-wider" id="room-pass-text">LH-PASS-9982</span>
+                <button onclick="copyToClipboard('LH-PASS-9982')" class="text-xs text-gray-400 hover:text-white bg-brand-border px-2 py-1 rounded">Copy</button>
+              </div>
+            </div>
+
+            <div class="bg-[#0f121d] p-4 rounded-xl border border-brand-border space-y-1">
+              <span class="text-xs text-gray-400 block uppercase font-mono">Event Rules Quick Links</span>
+              <p class="text-xs text-gray-300">Standard Competitive Modifiers: Max ping 80ms, Screenshots mandatory.</p>
+            </div>
+
+            <div class="md:col-span-2 bg-[#0f121d] p-4 rounded-xl border border-brand-border space-y-2">
+              <span class="text-xs text-gray-400 block uppercase font-mono">Event Details</span>
+              <p class="text-sm text-gray-300">
+                Matches consist of 3 rounds. Check-in starts 30 minutes prior. Late entries will be disqualified and replaced by reserve teams.
+              </p>
+            </div>
+
+            <div class="bg-[#0f121d] p-4 rounded-xl border border-brand-border flex items-center justify-between">
+              <div>
+                <span class="text-xs text-gray-400 block uppercase font-mono">Live Standings</span>
+                <span class="text-sm font-bold text-brand-cyan">Chart & Leaderboards Live</span>
+              </div>
+              <button onclick="navigateTo('results')" class="px-3 py-1.5 rounded bg-brand-border text-xs text-white hover:bg-brand-purple">View Chart</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- VIEW: REJECTED PLAYER VIEW (TOGGLEABLE) -->
+        <div id="tab-rejected-view" class="hidden glass-card rounded-2xl border-2 border-brand-red/50 p-6 bg-gradient-to-b from-[#241016] to-brand-card">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-full bg-brand-red/20 text-brand-red flex items-center justify-center font-bold text-xl"><i class="fa-solid fa-circle-xmark"></i></div>
+            <div>
+              <h4 class="text-xl font-bold text-white font-orbitron">APPLICATION REJECTED</h4>
+              <span class="text-xs text-brand-red font-mono">Reason: Warnings on account or missed verification deadline.</span>
+            </div>
+          </div>
+          <p class="text-sm text-gray-300 mb-4">Your application for this event could not be approved. Please review player guidelines or resolve active warning notices.</p>
+          <button onclick="navigateTo('bans')" class="px-4 py-2 rounded-lg bg-brand-border text-xs font-bold text-white hover:bg-brand-red">Check Warning & Ban Status</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 5. PLAYERS SECTION -->
+    <section id="sec-players" class="view-section hidden space-y-6">
+      <div class="flex justify-between items-center border-b border-brand-border pb-4">
+        <div>
+          <h2 class="text-2xl font-black text-white font-orbitron">PLAYER DIRECTORY</h2>
+          <p class="text-xs text-gray-400">Public roster, Discord tags, warnings, and administrative notes</p>
+        </div>
+        <div class="relative">
+          <input type="text" id="player-search-input" onkeyup="filterPlayers()" placeholder="Search player name or ID..." class="bg-brand-card border border-brand-border rounded-lg px-4 py-2 text-xs text-white focus:outline-none focus:border-brand-cyan w-64">
+        </div>
+      </div>
+
+      <!-- Player Table -->
+      <div class="glass-card rounded-2xl border border-brand-border overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse" id="players-table">
+            <thead>
+              <tr class="bg-[#121522] border-b border-brand-border text-xs text-brand-cyan font-orbitron uppercase">
+                <th class="p-4">Player Name</th>
+                <th class="p-4">Player ID</th>
+                <th class="p-4">Discord Tag</th>
+                <th class="p-4">Mobile</th>
+                <th class="p-4">Warnings</th>
+                <th class="p-4">Admin Notes</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-brand-border/60 text-sm text-gray-300 font-mono" id="player-rows">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="text-[11px] text-gray-500 font-mono">* Public shows Player Name. Warnings & Admin notes are updated in real-time by moderation team.</p>
+    </section>
+
+    <!-- 6. NEWS & ANNOUNCEMENTS SECTION -->
+    <section id="sec-news" class="view-section hidden space-y-6">
+      <div class="border-l-4 border-brand-purple pl-4">
+        <h2 class="text-2xl font-black text-white font-orbitron">NEWS & ANNOUNCEMENTS</h2>
+        <p class="text-xs text-gray-400">Official tournament updates, server news, and announcements</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card rounded-2xl p-5 border border-brand-border space-y-3">
+          <span class="text-[10px] bg-brand-purple/20 text-brand-purple px-2 py-0.5 rounded font-mono font-bold">ANNOUNCEMENT</span>
+          <h3 class="text-lg font-bold text-white font-orbitron">Anti-Cheat System Upgrade</h3>
+          <p class="text-xs text-gray-400">We have deployed new anti-cheat scanning protocols. Ensure client launcher is updated prior to upcoming matches.</p>
+          <span class="text-[10px] text-gray-500 block">Published 2 hours ago</span>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 border border-brand-border space-y-3">
+          <span class="text-[10px] bg-brand-red/20 text-brand-red px-2 py-0.5 rounded font-mono font-bold">PUNISHMENT NOTICE</span>
+          <h3 class="text-lg font-bold text-white font-orbitron">Weekly Enforcement Recap</h3>
+          <p class="text-xs text-gray-400">3 players were permanently banned this week for exploit usage. Full reports published in the Ban Log tab.</p>
+          <span class="text-[10px] text-gray-500 block">Published Yesterday</span>
+        </div>
+
+        <div class="glass-card rounded-2xl p-5 border border-brand-border space-y-3">
+          <span class="text-[10px] bg-brand-cyan/20 text-brand-cyan px-2 py-0.5 rounded font-mono font-bold">EVENT PREVIEW</span>
+          <h3 class="text-lg font-bold text-white font-orbitron">Season 6 Registration Teaser</h3>
+          <p class="text-xs text-gray-400">Season 6 details will be announced following the conclusion of current active tournament charts.</p>
+          <span class="text-[10px] text-gray-500 block">Published 3 days ago</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. RESULTS & CHARTS SECTION -->
+    <section id="sec-results" class="view-section hidden space-y-8">
+      <div class="border-b border-brand-border pb-4">
+        <h2 class="text-2xl font-black text-white font-orbitron">TOURNAMENT RESULTS & LIVE CHARTS</h2>
+        <p class="text-xs text-gray-400">Real-time charts for active events and final charts for closed events</p>
+      </div>
+
+      <!-- Active Events Sub-Section (Need chart give result live) -->
+      <div class="space-y-4">
+        <div class="flex items-center gap-2">
+          <span class="w-3 h-3 rounded-full bg-green-500 animate-ping"></span>
+          <h3 class="text-xl font-bold text-white font-orbitron">ACTIVE EVENT: Cyber Showdown Season 5 (LIVE CHART)</h3>
+        </div>
+
+        <!-- Live Scoreboard Chart Cards -->
+        <div class="glass-card rounded-2xl border border-brand-cyan/40 p-6 space-y-4">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            
+            <!-- Visual Bar Chart Representation -->
+            <div class="lg:col-span-7 space-y-3">
+              <h4 class="text-xs font-mono text-gray-400 uppercase">Live Points Distribution Chart</h4>
+              
+              <div>
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-brand-cyan">1. Team Nova Shadow</span>
+                  <span class="text-gray-300 font-mono">145 PTS (Live)</span>
+                </div>
+                <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden">
+                  <div class="bg-gradient-to-r from-brand-cyan to-blue-500 h-full w-[90%] transition-all duration-1000"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-brand-purple">2. Vipers Esports</span>
+                  <span class="text-gray-300 font-mono">120 PTS</span>
+                </div>
+                <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden">
+                  <div class="bg-gradient-to-r from-brand-purple to-indigo-500 h-full w-[75%] transition-all duration-1000"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-bold mb-1">
+                  <span class="text-gray-300">3. Apex Renegades</span>
+                  <span class="text-gray-300 font-mono">98 PTS</span>
+                </div>
+                <div class="w-full bg-gray-800 h-3 rounded-full overflow-hidden">
+                  <div class="bg-gradient-to-r from-gray-500 to-gray-400 h-full w-[60%] transition-all duration-1000"></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Live Stats Summary Box -->
+            <div class="lg:col-span-5 bg-[#0e111a] p-4 rounded-xl border border-brand-border space-y-3">
+              <span class="text-xs text-brand-red font-mono font-bold uppercase"><i class="fa-solid fa-signal mr-1"></i> Match Stream Telemetry</span>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="bg-brand-card p-2 rounded"><span class="text-gray-400 block">Round</span><span class="text-white font-bold">4 / 5</span></div>
+                <div class="bg-brand-card p-2 rounded"><span class="text-gray-400 block">Top Eliminator</span><span class="text-brand-cyan font-bold">Ghost_Rider (18 Kills)</span></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Closed Event Sub-Section (Final charts) -->
+      <div class="space-y-4 pt-6 border-t border-brand-border/60">
+        <h3 class="text-xl font-bold text-gray-400 font-orbitron"><i class="fa-solid fa-lock text-xs mr-2"></i>CLOSED EVENT: Summer Clash 2026 (FINAL CHART)</h3>
+        
+        <div class="glass-card rounded-2xl border border-brand-border p-6">
+          <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+            <span class="text-xs text-gray-400 font-mono">Completed: Aug 20, 2026</span>
+            <span class="bg-brand-border text-gray-300 text-xs px-3 py-1 rounded-full font-bold">FINAL ARCHIVE</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-[#121522] p-4 rounded-xl border border-amber-500/40 text-center space-y-1">
+              <i class="fa-solid fa-crown text-3xl text-amber-400"></i>
+              <span class="block text-sm font-bold text-white font-orbitron">1st Place: Phantom Elite</span>
+              <span class="text-xs text-brand-cyan font-mono">$3,000 Awarded</span>
+            </div>
+            <div class="bg-[#121522] p-4 rounded-xl border border-gray-400/30 text-center space-y-1">
+              <i class="fa-solid fa-medal text-3xl text-gray-300"></i>
+              <span class="block text-sm font-bold text-white font-orbitron">2nd Place: Tactical Titans</span>
+              <span class="text-xs text-gray-400 font-mono">$1,500 Awarded</span>
+            </div>
+            <div class="bg-[#121522] p-4 rounded-xl border border-amber-700/30 text-center space-y-1">
+              <i class="fa-solid fa-award text-3xl text-amber-700"></i>
+              <span class="block text-sm font-bold text-white font-orbitron">3rd Place: Cyber Knights</span>
+              <span class="text-xs text-gray-400 font-mono">$500 Awarded</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. EVENT HISTORY SECTION -->
+    <section id="sec-history" class="view-section hidden space-y-6">
+      <div class="border-l-4 border-brand-cyan pl-4">
+        <h2 class="text-2xl font-black text-white font-orbitron">EVENT HISTORY</h2>
+        <p class="text-xs text-gray-400">Interactive directory: Click Active redirects to Event details; Click Closed redirects to Results.</p>
+      </div>
+
+      <div class="glass-card rounded-2xl border border-brand-border overflow-hidden">
+        <div class="divide-y divide-brand-border">
+          
+          <!-- Event Item: Active -->
+          <div class="p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 hover:bg-brand-border/30 transition-all">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-400 border border-green-500/30 font-mono uppercase">● Active</span>
+                <h3 class="text-base font-bold text-white font-orbitron">Cyber Showdown Season 5</h3>
+              </div>
+              <p class="text-xs text-gray-400 font-mono">Date: Oct 2026 | Prize: $10,000</p>
+            </div>
+            <button onclick="navigateTo('events')" class="px-4 py-2 rounded-lg bg-brand-cyan/20 border border-brand-cyan text-brand-cyan text-xs font-bold hover:bg-brand-cyan hover:text-black transition-all">
+              Go to Event Details <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+          </div>
+
+          <!-- Event Item: Active -->
+          <div class="p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 hover:bg-brand-border/30 transition-all">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-green-500/20 text-green-400 border border-green-500/30 font-mono uppercase">● Active</span>
+                <h3 class="text-base font-bold text-white font-orbitron">Last Hope Regional Open</h3>
+              </div>
+              <p class="text-xs text-gray-400 font-mono">Date: Oct 28, 2026 | Prize: $5,000</p>
+            </div>
+            <button onclick="navigateTo('events')" class="px-4 py-2 rounded-lg bg-brand-cyan/20 border border-brand-cyan text-brand-cyan text-xs font-bold hover:bg-brand-cyan hover:text-black transition-all">
+              Go to Event Details <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+          </div>
+
+          <!-- Event Item: Closed -->
+          <div class="p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 hover:bg-brand-border/30 transition-all bg-black/20">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-600/30 text-gray-400 border border-gray-600/40 font-mono uppercase">Closed</span>
+                <h3 class="text-base font-bold text-gray-300 font-orbitron">Summer Clash Tournament 2026</h3>
+              </div>
+              <p class="text-xs text-gray-500 font-mono">Date: Aug 2026 | Winners Announced</p>
+            </div>
+            <button onclick="navigateTo('results')" class="px-4 py-2 rounded-lg bg-brand-border text-xs font-bold text-gray-300 hover:text-white hover:bg-brand-purple transition-all">
+              Go to Results & Charts <i class="fa-solid fa-chart-bar ml-1"></i>
+            </button>
+          </div>
+
+          <!-- Event Item: Closed -->
+          <div class="p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 hover:bg-brand-border/30 transition-all bg-black/20">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-600/30 text-gray-400 border border-gray-600/40 font-mono uppercase">Closed</span>
+                <h3 class="text-base font-bold text-gray-300 font-orbitron">Spring Warzone Invitational</h3>
+              </div>
+              <p class="text-xs text-gray-500 font-mono">Date: May 2026 | Completed</p>
+            </div>
+            <button onclick="navigateTo('results')" class="px-4 py-2 rounded-lg bg-brand-border text-xs font-bold text-gray-300 hover:text-white hover:bg-brand-purple transition-all">
+              Go to Results & Charts <i class="fa-solid fa-chart-bar ml-1"></i>
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. WINNERS HALL OF FAME SECTION -->
+    <section id="sec-winners" class="view-section hidden space-y-6">
+      <div class="border-l-4 border-amber-400 pl-4">
+        <h2 class="text-2xl font-black text-white font-orbitron">WINNERS HALL OF FAME</h2>
+        <p class="text-xs text-gray-400">Showcase for champions across all Last Hope tournaments</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="winners-cards-container">
+        <!-- Dynamic Cards or pre-populated wireframe items -->
+      </div>
+    </section>
+
+    <!-- 10. PUBLIC WARNING & BANS / PUNISHMENTS SECTION -->
+    <section id="sec-bans" class="view-section hidden space-y-8">
+      <div class="border-l-4 border-brand-red pl-4">
+        <h2 class="text-2xl font-black text-white font-orbitron">PUBLIC WARNING & BANS / PUNISHMENTS</h2>
+        <p class="text-xs text-gray-400">Public ledger for player infractions, anti-cheat enforcement, and disciplinary actions</p>
+      </div>
+
+      <!-- Public Warning Cards Wall -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-bold text-amber-400 font-orbitron flex items-center gap-2">
+          <i class="fa-solid fa-triangle-exclamation"></i> PUBLIC WARNING WALL
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <div class="glass-card rounded-xl p-4 border border-amber-500/40 space-y-2">
+            <div class="flex justify-between items-start">
+              <span class="text-xs font-mono bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded font-bold">WARNING TIER 1</span>
+              <a href="#" onclick="showProofModal('Proof Link: Anti-cheat screenshot flag #882')" class="text-xs text-brand-cyan underline font-mono">Proof URL</a>
+            </div>
+            <div>
+              <span class="text-xs text-gray-400 block font-mono">Player ID: <strong class="text-white">LH-PL-3092</strong></span>
+              <p class="text-sm font-semibold text-gray-200 mt-1">Reason: Unsportsmanlike conduct in Discord voice channel.</p>
+            </div>
+            <p class="text-[10px] text-gray-500 font-mono">Notice: IF not obey, further punishments will be applied.</p>
+          </div>
+
+          <div class="glass-card rounded-xl p-4 border border-amber-500/40 space-y-2">
+            <div class="flex justify-between items-start">
+              <span class="text-xs font-mono bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded font-bold">WARNING TIER 2</span>
+              <a href="#" onclick="showProofModal('Proof Link: Match ping logs screenshot #102')" class="text-xs text-brand-cyan underline font-mono">Proof URL</a>
+            </div>
+            <div>
+              <span class="text-xs text-gray-400 block font-mono">Player ID: <strong class="text-white">LH-PL-8819</strong></span>
+              <p class="text-sm font-semibold text-gray-200 mt-1">Reason: Delaying match start repeatedly.</p>
+            </div>
+            <p class="text-[10px] text-gray-500 font-mono">Notice: IF not obey, further punishments will be applied.</p>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Bans and Punishments Table Wireframe (Name, Reason, Action, Proof) -->
+      <div class="space-y-4 pt-4">
+        <h3 class="text-lg font-bold text-brand-red font-orbitron flex items-center gap-2">
+          <i class="fa-solid fa-[#ff2a5f] fa-ban"></i> BANS AND PUNISHMENTS LOG
+        </h3>
+
+        <div class="glass-card rounded-2xl border border-brand-red/40 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-[#1c0d15] border-b border-brand-red/30 text-xs text-brand-red font-orbitron uppercase">
+                  <th class="p-4">Player Name</th>
+                  <th class="p-4">Reason</th>
+                  <th class="p-4">Action Taken</th>
+                  <th class="p-4">Proof</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-brand-border/60 text-sm text-gray-300 font-mono">
+                <tr>
+                  <td class="p-4 font-bold text-white">ShadowSniper99</td>
+                  <td class="p-4 text-xs">Use of unauthorized macro scripts</td>
+                  <td class="p-4"><span class="px-2 py-0.5 rounded text-xs bg-brand-red/20 text-brand-red border border-brand-red/40 font-bold">PERMANENT BAN</span></td>
+                  <td class="p-4"><button onclick="showProofModal('Rec File: macro_recap_shadow.mp4')" class="text-xs text-brand-cyan hover:underline">View Proof</button></td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-white">ToxicAvenger</td>
+                  <td class="p-4 text-xs">Harassment of tournament referees</td>
+                  <td class="p-4"><span class="px-2 py-0.5 rounded text-xs bg-amber-500/20 text-amber-400 border border-amber-500/40 font-bold">30-DAY SUSPENSION</span></td>
+                  <td class="p-4"><button onclick="showProofModal('Chat Log: Ref_report_882.png')" class="text-xs text-brand-cyan hover:underline">View Proof</button></td>
+                </tr>
+                <tr>
+                  <td class="p-4 font-bold text-white">Ghost_Lobbyer</td>
+                  <td class="p-4 text-xs">Sharing custom room password to third parties</td>
+                  <td class="p-4"><span class="px-2 py-0.5 rounded text-xs bg-brand-red/20 text-brand-red border border-brand-red/40 font-bold">SEASON DISQUALIFIED</span></td>
+                  <td class="p-4"><button onclick="showProofModal('Screenshot: discord_leak_proof.jpg')" class="text-xs text-brand-cyan hover:underline">View Proof</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- AUTH MODAL (Sign In / Log In) -->
+  <div id="auth-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="glass-card rounded-2xl border border-brand-border w-full max-w-md p-6 relative">
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+
+      <div class="text-center mb-6">
+        <h3 id="auth-title" class="text-2xl font-bold text-white font-orbitron">LOG IN TO LAST HOPE</h3>
+        <p class="text-xs text-gray-400 mt-1">Access room passwords and player status</p>
+      </div>
+
+      <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-mono text-gray-400 mb-1">Player Username / Email</label>
+          <input type="text" required placeholder="ProGamer_X" class="w-full bg-[#0d0f17] border border-brand-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-cyan">
+        </div>
+        <div>
+          <label class="block text-xs font-mono text-gray-400 mb-1">Password</label>
+          <input type="password" required placeholder="••••••••" class="w-full bg-[#0d0f17] border border-brand-border rounded-lg px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-cyan">
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-lg bg-gradient-to-r from-brand-red to-brand-purple font-bold text-white font-orbitron tracking-wider text-sm shadow-lg shadow-brand-red/20 hover:opacity-90">
+          CONFIRM & PROCEED
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- APPLICATION CONFIRMATION MODAL -->
+  <div id="apply-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="glass-card rounded-2xl border border-brand-cyan/50 w-full max-w-md p-6 relative text-center space-y-4">
+      <div class="w-16 h-16 rounded-full bg-brand-cyan/20 border border-brand-cyan text-brand-cyan flex items-center justify-center mx-auto text-3xl">
+        <i class="fa-solid fa-paper-plane"></i>
+      </div>
+      <h3 class="text-xl font-bold text-white font-orbitron" id="apply-event-title">Tournament Registration</h3>
+      <p class="text-xs text-gray-300">Your application request will be submitted to admins. Once approved, the room password will unlock in your Events Tab.</p>
+
+      <div class="pt-2 flex justify-center gap-3">
+        <button onclick="closeApplyModal()" class="px-5 py-2 rounded-lg bg-brand-border text-xs font-bold text-gray-300">Cancel</button>
+        <button onclick="submitApplication()" class="px-5 py-2 rounded-lg bg-brand-cyan text-black font-bold text-xs font-orbitron hover:bg-white transition-all">Submit Application</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROOF MODAL -->
+  <div id="proof-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+    <div class="glass-card rounded-2xl border border-brand-border w-full max-w-md p-6 relative text-center space-y-4">
+      <button onclick="closeProofModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <i class="fa-solid fa-file-contract text-4xl text-brand-cyan"></i>
+      <h3 class="text-lg font-bold text-white font-orbitron">PROOF RECORD ATTACHMENT</h3>
+      <p id="proof-content-text" class="text-xs font-mono text-gray-300 bg-[#0d0f17] p-3 rounded-lg border border-brand-border"></p>
+      <button onclick="closeProofModal()" class="px-6 py-2 rounded-lg bg-brand-border text-xs font-bold text-white">Close</button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 hidden bg-brand-card border border-brand-cyan px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 font-mono text-xs text-white">
+    <i class="fa-solid fa-circle-info text-brand-cyan" id="toast-icon"></i>
+    <span id="toast-message">Notification action complete.</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-brand-border bg-[#07080d] py-8 text-center text-xs text-gray-500 font-mono">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p>© 2026 LAST HOPE ESPORTS LEAGUE. ALL RIGHTS RESERVED.</p>
+      <p class="text-[10px] text-gray-600">Built according to tournament operational wireframes.</p>
+    </div>
+  </footer>
+
+  <script>
+    // State management
+    let isLoggedIn = true; // Default logged in for demo ease
+    let isApprovedPlayer = true; // Status toggle for workflow demonstration
+
+    // Mock Data
+    const playersData = [
+      { name: "ProGamer_X", id: "LH-PL-1001", discord: "ProGamer#1234", mobile: "+1 555-0192", warnings: "0 Warnings", notes: "Verified Captain" },
+      { name: "Viper_Blade", id: "LH-PL-1002", discord: "Viper#9981", mobile: "+1 555-0144", warnings: "1 Warning (Lag)", notes: "Monitored Ping" },
+      { name: "CyberQueen", id: "LH-PL-1003", discord: "CyberQ#4412", mobile: "+1 555-0188", warnings: "0 Warnings", notes: "Tournament MVP Candidate" },
+      { name: "Apex_Hunter", id: "LH-PL-1004", discord: "ApexHunter#0091", mobile: "+1 555-0122", warnings: "2 Warnings", notes: "Final warning prior to ban" },
+      { name: "ShadowSniper99", id: "LH-PL-3092", discord: "Shadow#3311", mobile: "+1 555-0999", warnings: "PERMANENT BAN", notes: "Banned for script usage" }
+    ];
+
+    const winnersData = [
+      { winnerName: "Team Nova Shadow", winnerId: "LH-TM-881", prize: "$5,000", event: "Cyber Showdown S4", place: "1st Place (Champion)" },
+      { winnerName: "Vipers Esports", winnerId: "LH-TM-402", prize: "$2,500", event: "Cyber Showdown S4", place: "2nd Place" },
+      { winnerName: "Apex Vanguard", winnerId: "LH-TM-110", prize: "$1,000", event: "Cyber Showdown S4", place: "3rd Place" },
+      { winnerName: "Phantom Elite", winnerId: "LH-TM-900", prize: "$3,000", event: "Summer Clash 2026", place: "1st Place (Champion)" },
+      { winnerName: "Tactical Titans", winnerId: "LH-TM-552", prize: "$1,500", event: "Summer Clash 2026", place: "2nd Place" }
+    ];
+
+    // Initialization on window load
+    window.onload = function() {
+      // Simulate splash screen progress
+      let progress = 0;
+      const bar = document.getElementById('splash-bar');
+      const interval = setInterval(() => {
+        progress += 25;
+        if(bar) bar.style.width = progress + '%';
+        if(progress >= 100) {
+          clearInterval(interval);
+          document.getElementById('enter-btn').classList.remove('hidden');
+        }
+      }, 150);
+
+      renderPlayers();
+      renderWinners();
+    };
+
+    function dismissSplash() {
+      const splash = document.getElementById('splash-screen');
+      splash.style.opacity = '0';
+      setTimeout(() => splash.remove(), 700);
+    }
+
+    function navigateTo(targetId) {
+      // Hide all view sections
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
+
+      // Show targeted section
+      const targetSec = document.getElementById('sec-' + targetId);
+      if(targetSec) targetSec.classList.remove('hidden');
+
+      // Update active nav button styling
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if(btn.getAttribute('data-target') === targetId) {
+          btn.classList.add('text-brand-cyan');
+          btn.classList.remove('text-gray-300');
+        } else {
+          btn.classList.remove('text-brand-cyan');
+          btn.classList.add('text-gray-300');
+        }
+      });
+
+      // Close mobile menu if open
+      document.getElementById('mobile-menu').classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    // Toggle player status (Approved vs Rejected) for demonstration of workflow
+    function toggleUserStatus() {
+      isApprovedPlayer = !isApprovedPlayer;
+      const pill = document.getElementById('events-user-status-pill');
+      const roleText = document.getElementById('user-status-role');
+      const approvedTab = document.getElementById('tab-approved-view');
+      const rejectedTab = document.getElementById('tab-rejected-view');
+
+      if(isApprovedPlayer) {
+        pill.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-green-500/20 text-green-400 border border-green-500/40 font-mono";
+        pill.innerText = "APPROVED PLAYER";
+        roleText.className = "block text-[10px] text-green-400 font-mono";
+        roleText.innerText = "APPROVED PLAYER";
+        approvedTab.classList.remove('hidden');
+        rejectedTab.classList.add('hidden');
+        showToast("Player status switched to: APPROVED");
+      } else {
+        pill.className = "inline-block px-3 py-1 rounded-full text-xs font-bold bg-brand-red/20 text-brand-red border border-brand-red/40 font-mono";
+        pill.innerText = "APPLICATION REJECTED";
+        roleText.className = "block text-[10px] text-brand-red font-mono";
+        roleText.innerText = "REJECTED STATUS";
+        approvedTab.classList.add('hidden');
+        rejectedTab.classList.remove('hidden');
+        showToast("Player status switched to: REJECTED");
+      }
+    }
+
+    function renderPlayers() {
+      const tbody = document.getElementById('player-rows');
+      tbody.innerHTML = playersData.map(p => `
+        <tr class="hover:bg-brand-border/30 transition-all">
+          <td class="p-4 font-bold text-white flex items-center gap-2">
+            <div class="w-6 h-6 rounded-full bg-brand-border flex items-center justify-center text-[10px] text-brand-cyan">${p.name.charAt(0)}</div>
+            ${p.name}
+          </td>
+          <td class="p-4 text-xs text-brand-cyan">${p.id}</td>
+          <td class="p-4 text-xs">${p.discord}</td>
+          <td class="p-4 text-xs text-gray-400">${p.mobile}</td>
+          <td class="p-4"><span class="px-2 py-0.5 rounded text-[11px] ${p.warnings.includes('PERMANENT') ? 'bg-brand-red/20 text-brand-red font-bold' : 'bg-brand-border text-gray-300'}">${p.warnings}</span></td>
+          <td class="p-4 text-xs text-gray-400">${p.notes}</td>
+        </tr>
+      `).join('');
+    }
+
+    function filterPlayers() {
+      const q = document.getElementById('player-search-input').value.toLowerCase();
+      const rows = document.querySelectorAll('#player-rows tr');
+      rows.forEach(r => {
+        r.style.display = r.innerText.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
+
+    function renderWinners() {
+      const container = document.getElementById('winners-cards-container');
+      container.innerHTML = winnersData.map(w => `
+        <div class="glass-card rounded-2xl p-5 border border-brand-border space-y-3 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-amber-400/5 rounded-full blur-xl"></div>
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono text-amber-400 font-bold"><i class="fa-solid fa-trophy mr-1"></i> ${w.place}</span>
+            <span class="text-xs font-mono text-brand-cyan">${w.prize}</span>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-white font-orbitron">${w.winnerName}</h3>
+            <span class="text-xs text-gray-400 font-mono">Winner ID: ${w.winnerId}</span>
+          </div>
+          <div class="pt-2 border-t border-brand-border/60 text-xs text-gray-300">
+            <span>Event: <b>${w.event}</b></span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    let selectedEventForApply = '';
+
+    function handleApplyClick(eventName) {
+      if(!isLoggedIn) {
+        openAuthModal('login');
+        showToast("Please Log In to apply for tournaments.");
+        return;
+      }
+      selectedEventForApply = eventName;
+      document.getElementById('apply-event-title').innerText = eventName;
+      document.getElementById('apply-modal').classList.remove('hidden');
+    }
+
+    function closeApplyModal() {
+      document.getElementById('apply-modal').classList.add('hidden');
+    }
+
+    function submitApplication() {
+      closeApplyModal();
+      showToast(`Application submitted for ${selectedEventForApply}!`);
+      navigateTo('events');
+    }
+
+    function openAuthModal(mode) {
+      document.getElementById('auth-title').innerText = mode === 'login' ? 'LOG IN TO LAST HOPE' : 'REGISTER NEW PLAYER';
+      document.getElementById('auth-modal').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('auth-modal').classList.add('hidden');
+    }
+
+    function handleAuthSubmit(e) {
+      e.preventDefault();
+      closeAuthModal();
+      isLoggedIn = true;
+      document.getElementById('logged-out-view').classList.add('hidden');
+      document.getElementById('logged-in-view').classList.remove('hidden');
+      showToast("Successfully logged in!");
+    }
+
+    function logout() {
+      isLoggedIn = false;
+      document.getElementById('logged-out-view').classList.remove('hidden');
+      document.getElementById('logged-in-view').classList.add('hidden');
+      showToast("Logged out of platform.");
+    }
+
+    function showProofModal(details) {
+      document.getElementById('proof-content-text').innerText = details;
+      document.getElementById('proof-modal').classList.remove('hidden');
+    }
+
+    function closeProofModal() {
+      document.getElementById('proof-modal').classList.add('hidden');
+    }
+
+    function copyToClipboard(text) {
+      const tempInput = document.createElement('input');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast("Password copied to clipboard!");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3000);
+    }
+  </script>
+</body>
+</html>
